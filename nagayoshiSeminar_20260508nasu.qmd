@@ -1,0 +1,245 @@
+---
+title: "Do Workplace Disparities Shape Perceptions of Precarious Workers?"
+subtitle: ""
+author: "Rantaro Nasu"
+date: "2026-05-08"
+format: 
+    html:
+        toc: true
+        toc_float: true
+editor: visual
+---
+
+```{r include=FALSE}
+pacman::p_load(modelsummary,dplyr,tidyr,lme4,openxlsx,ggplot2,ggeffects,janitor,estimatr,marginaleffects,gridExtra,ggpubr,psych,knitr,kableExtra,tibble,GPArotation,readr,gt)
+```
+
+## 0.永吉ゼミ報告にあたって
+
+### 0.1.本報告について
+
+-   まだ，構想段階の研究です．全然議論ができていませんごめんなさい．
+-   研究で知りたいことは，「非正規雇用に対する認識（地位評価）は，人々がこれまでに経験した雇用形態格差やそれへの接触によってどのように異なるか？」です．
+-   これから考えていくことが多いので，奇譚のないコメントを頂けますと幸いです．
+
+### 0.2.予定スケジュール
+
+-   2026.06.22 日本社会学会 申し込み
+-   2026.09 初稿完成（フルペーパー）を目指す
+-   2026.11 日本社会学会 報告
+-   2026.12 preprintを提出
+-   2027.01 International Sociology, Social Science Research ?
+
+### 0.3.懸念
+
+-   サラミ論文とみなされないか
+    -   これまでに，同じデータを使用し，「非正規雇用の地位評価とジェンダー」「非正規雇用の地位評価と評価基準」「非正規雇用の地位評価と評価者属性異質性」に関する論文を書いています．
+-   現状は，全く国際誌向けに書いていないので，これから書き換えていく必要がある．
+    -   Ridgeway流の評価研究に，Tomaskovic-Devey and Avent-Holt流のrelational inequalitiesの議論を付け加える．boundary makingの話は日本の非正規雇用の話につながりそうなので，theoryへの貢献として日本を取り上げるという立て付け？
+-   職業威信研究との距離感
+
+## 1.導入
+
+　本稿の目的は，企業内部の正規・非正規雇用間格差やその境界が，非正規雇用の地位に関する認識に対してどう影響するのか明らかにする点にある．
+
+　労働市場の流動化により，不安定雇用就業者が直面する社会経済的不利に関して注目が集まっている（Kalleberg 2018）．日本においては，非正規雇用問題として社会的な関心を呼び，その広範な社会経済的不利が指摘されてきた（Imai 2011; 神林 2017; OECD 2017）．正規・非正規雇用の間にある多様な格差は，現代日本の社会階層を理解する上でもっとも重要な論点のひとつである．
+
+　正規雇用・非正規雇用のように，ある社会的集団間に存在する格差は，これまで広く検討されてきたような，所得に代表される社会経済的資源の多寡にとどまらない．Weber（1956=1970）があげるような地位（Status），つまりは他者からの評価や名誉も，集団間の格差を理解する上で重要な役割を持つ．地位の格差は，評価バイアスを生じさせるとともに（Ridgeway and Markus 2022），社会経済的資源の不平等な配分を正当化する（Ridgeway 2014）．非正規雇用の地位が正規雇用に比べ低く評価されている場合，正規雇用と非正規雇用の間に存在する資源の不平等は，正当なものとして認識されるかもしれない（Arita et al. 2023）．したがって，非正規雇用の地位に関する社会で共有された認識を検討することは，正規雇用と非正規雇用間での社会的不平等が維持され，正当化されるメカニズムを理解する上で重要な検討課題である．
+
+　非正規雇用に対する地位評価を検討した研究群はこれまで，正規雇用よりも顕著に低い非正規雇用の地位を明らかにしてきた（元治 2018; Nasu 2025; 瀬戸ほか 2026）．これらの議論は，正規雇用と非正規雇用の間での明確な地位の違いを強調する．非正規雇用に関する既存研究も，非正規雇用固有の「地位」が存在し，それが日本社会全体で画一的なものとして共有されているという前提を保有している（有田 2016）．しかし，非正規雇用に付与される地位評価，ないしはその意味を社会全体で画一的に捉える立場は，社会と個人の間に存在するメゾレベルの要因や個人間の相互作用によって生じる地位評価の変動を考察対象から捨象してしまう．特に雇用関係の検討にあたっては企業が持つ役割を無視できず，さらに地位評価の検討にあたっては個人間の相互作用が重要な役割を果たす．本稿ではこのような問題関心から，非正規雇用の地位評価における，企業内特性の影響を検討する．
+
+## 2.理論と先行研究
+
+### 2.1.日本の非正規雇用と非正規雇用に対する地位評価
+
+　日本の非正規雇用に関する検討の多くは，正規雇用と明確に区別された非正規雇用の地位を扱ってきた．多くの既存研究は，企業をユニットとして形成された労働市場の特徴と，そこに対する正規雇用のメンバーシップ概念によって，日本における正規・非正規雇用の明確な区分が引かれることを示している．今井（2021）は，企業別労使関係という日本の労働市場の歴史的経緯をふまえ，正規雇用の地位が確立されていく過程を描いている．また，有田（2016）は，公的統計における非正規雇用の捕捉方法に着目し，日本の非正規雇用が正社員でない者として高度に標準化されていることを示している．このような正規・非正規雇用間での明確な地位の違いは，1990年代以降の男性非正規雇用の拡大の影響も受け，古典的な階層研究が標榜してきた職種や企業規模に加えて，従業上の地位が，さまざまな社会経済的格差の要因となっていることを強調している（Gordon 2017; Robinson et al. 2022; Yu 2012）．
+
+　このような非正規雇用の日本的特性をふまえ，近年の日本の地位評価研究・職業威信研究は，正規雇用・非正規雇用による地位評価の違いを明らかにしている．たとえば元治（2018）は，通常の職業威信研究が提示する様々な職業リストの一部に，非正規雇用であるとの情報を付与することによって，雇用形態による職業威信の差を検討している．その結果，どのような職業であっても，非正規雇用に対する評価は正規雇用と比べ低いことを明らかにしている．また，Nasu（2025）も，複数の職種と雇用形態を直交させた要因配置実験から，元治（2018）の知見を再現するとともに，昇給可能性が非正規雇用において低いことが，非正規雇用の低い職業威信を部分的に説明することを明らかにしている．瀬戸ほか（2026）も，雇用形態の別を組み込んだ地位評価の実験から，正規雇用と非正規雇用の別が，地位評価の違いを強く説明することを明らかにしている．
+
+### 2.2.地位に対する関係的視点と企業
+
+　このように非正規雇用の地位評価に関する研究群は，正規・非正規雇用間の評価の差に着目している一方で，その評価や認識が形成されるメゾレベルの過程を明らかにしていない．特定の集団に対する地位評価が，社会全体よりも小さなメゾレベルの要因によりどのような影響を受けるか検討することは重要である．第1に，地位に関する評価は，ミクロレベルの他者との交流によって形成される（Ridgeway and Correll 2006）．地位評価を社会全体ではなく，より小さなミクロあるいはメゾレベルで捉えることは，こうしたプロセスで生じる地位評価の多様性を，適切に分析に組み込むことを可能とする．第2に，企業などのメゾレベルの組織における実践・慣行は，マクロレベルとして観察される不平等を媒介する役割を持つ（Dobbin 2009）．雇用における企業の影響が大きく（Dore 1973=1987），雇用労働化が進む現代日本社会において（小熊 2019），さまざまな資源の配分を決定する企業は，社会的不平等の形成に影響をもたらす．以上のように，正規雇用・非正規雇用間の地位評価の格差を検討する上で，メゾレベルの制度要因に着目することは重要であるものの，非正規雇用の地位評価においてこれまでに十分に着目されていない．
+
+　何らかの属性に対する社会的な評価は，人々の相互作用によって形成される（Ridgeway and Markus 2022）．カテゴリ間の不平等な資源配分を再現し，実際の相互作用が地位評価を形成する過程を検証した研究は，本来は資源と関連しない名目的カテゴリを資源量と相関させた場合，高い資源と結びつく名目的カテゴリに対して高い評価が与えられることを示している（Ridgeway et al. 1998）．また，シミュレーションの結果からも，日常的な小さな相互作用で触れるカテゴリ間の資源の格差が，カテゴリ間の社会的地位評価の格差を形成することが示されている（Ridgeway and Balkwell 1997）．
+
+　以上をふまえれば，日本の労働市場に存在する正規・非正規雇用の認識は，行為者が日常で形成する相互作用の影響を受ける可能性がある．特に本稿では，企業・職場内部での相互作用の影響を検討する．**（追記）**
+
+## 3.問題の所在と仮説
+
+　既存研究は，日本の正規・非正規雇用間での地位評価の格差に着目し，非正規雇用に対する地位評価が正規雇用と比べて顕著に低いことを強調してきた．一方で，地位評価の形成において，人々の相互作用が従来想定されてきたにもかかわらず，非正規雇用の地位評価に関する既存研究はこれを検討していない．特に働く個人にとって，同じ職場における相互作用の役割は欠かせず，企業を中心として様々な制度設計がなされる日本ではこの重要性は特に高まる．そこで本稿では，非正規雇用に対する人々の地位評価を，特に同一職場内の相互作用の観点から検討する．特に同一職場内での格差の状況に着目し，日常的に触れる正規・非正規雇用間での格差や区分が，マクロレベルの非正規雇用に対する認識を形成することを明らかにする．
+
+　本稿では仮説1として，職場における正規・非正規雇用格差が，非正規雇用の地位に対する認識に与える影響を検討する．Ridgeway and Balkwell（1997）は，日常的な相互作用において経験する資源の格差が，何らかのカテゴリ間の地位評価の格差を形成することを示している．これをふまえれば，職場内で日常的に正規・非正規雇用格差を観察している個人は，正規・非正規雇用間の地位の差を大きく評価する可能性がある．
+
+**仮説1．同一職場内の正規・非正規雇用格差が大きいほど，正規・非正規雇用間の地位の格差を大きく評価する．**
+
+　さらに，正規・非正規雇用間の区分が明確である職場では，両者の差が強調され，正規・非正規雇用間の地位の差が大きく評価される可能性がある．たとえば非正規雇用の基幹労働化のように，正規雇用と非正規雇用の業務内容の差が不明瞭である場合には，そうでない場合と比べ，地位という観点において両者を明確に区別するという認識は形成されにくくなるかもしれない．
+
+**仮説2．同一職場内の正規・非正規雇用間での業務内容の差が大きいほど，正規・非正規雇用間の地位の格差は大きく評価される．**
+
+## 4.方法
+
+### 4.1.データ
+
+　本稿では，「社会的威信と地位評価に関する調査」を使用する．本調査は，2024年にインターネット・モニターに対して実施されたweb調査であり，人々が持つ非正規雇用の地位に対する認識を聴取している．サンプルは性別・年齢・学歴・雇用形態による割付によって抽出された20歳から59歳までの男女2,008人によって構成される．本調査には，ヴィネット実験が含まれている．ヴィネット実験とは，架空の個人（ヴィネット）を回答者に提示し，それに対する意見や評価を聴取する要因配置実験の一種である（Auspurg and Hinz 2015）．本調査のヴィネット実験では，雇用形態・職種・職務特性・性別の組み合わせによってヴィネットを作成し，そのヴィネットに対する地位評価を聴取している．
+
+### 4.2.変数
+
+　分析に使用する従属変数は，9件尺度で測定されたヴィネットに対する地位評価である．数値が大きいほど，地位が高いと評価されたことを意味する．説明変数としては，ヴィネットの雇用形態（正規雇用・アルバイト・派遣社員），職場内での雇用形態格差（賃金・福利厚生・昇給・仕事の訓練機会），職場内の雇用形態による業務の違いを使用した．ヴィネットの雇用形態は，正規雇用を参照カテゴリとした3つのカテゴリからなる変数である．職場内での雇用形態格差は，各4項目について，格差がある場合に1をとるダミー変数であり，「わからない」場合には欠損としている．この変数は，パート・アルバイトと正規雇用，派遣社員と正規雇用との間の格差についてそれぞれ作成した．さらに，職場内の雇用形態による業務の違いは，正規雇用とパート・アルバイトおよび正規雇用と派遣社員の間の業務内容の違いについて，「業務内容は同じ」「業務内容はほぼ同じ」を「同じ業務」（参照カテゴリ），「正社員の方が高度な業務を行っている」を「正社員の方が高度」，「正社員でない従業員の方が高度な業務を行っている」を「非正規の方が高度」とする3カテゴリの変数である．「わからない」の場合には欠損としている． 　統制変数には，ヴィネットのすべての属性，回答者の女性ダミー・年齢・大卒ダミー・雇用形態・大企業ダミー・ホワイトカラーダミーを投入した．年齢については，10歳ごとの4カテゴリからなる変数，雇用形態は正規雇用・非正規雇用・自営業の3カテゴリからなる変数である．
+
+### 4.3.分析戦略
+
+　分析モデルとしては，ランダム効果モデルを採用した．切片とヴィネット従業上の地位の傾きに個人によるランダム効果を仮定した．
+
+### 4.4.記述統計
+
+::: {.callout-tip collapse="true" icon="false"}
+### 記述統計（折りたたみ）
+
+```{r echo=FALSE}
+desc <- readRDS("output/desc.rds") |> select(labels,n:sd)
+desc |>
+  gt()
+```
+:::
+
+## 5.分析結果
+
+### 5.1.回帰分析の結果
+
+```{r echo=FALSE, warning=FALSE}
+table2 <- readRDS("output/table2.rds")
+table2 |>
+  gt() |>
+  tab_spanner(columns = 3:7, label = "model2") |>
+  tab_spanner(columns = 8:12, label = "model3") |>
+  cols_align(align = "center", columns = c(2:12)) |>
+  cols_align(align = "left", columns = 1) |>
+  fmt_missing(columns = everything(),missing_text = "") |>
+  tab_options(table.font.size=12) |>
+  cols_label("term"="",
+             "model1"="model1",
+             "model2（賃金）"="賃金",
+             "model2（福利厚生）"="福利厚生",
+             "model2（昇給）"="昇給",
+             "model2（訓練機会）"="訓練機会",
+             "model2（業務内容）"="業務内容",
+             "model3（賃金）"="賃金",
+             "model3（福利厚生）"="福利厚生",
+             "model3（昇給）"="昇給",
+             "model3（訓練機会）"="訓練機会",
+             "model3（業務内容）"="業務内容")
+```
+
+### 5.2.限界効果
+
+#### 5.2.1.アルバイトと正規雇用の格差
+
+::: panel-tabset
+```{r echo=FALSE}
+predict_res <- readRDS("output/predict_res.RDS")
+```
+
+##### 賃金
+
+```{r echo=FALSE}
+predict_res[["gap11"]]
+```
+
+##### 福利厚生
+
+```{r echo=FALSE}
+predict_res[["gap12"]]
+```
+
+##### 昇給
+
+```{r echo=FALSE}
+predict_res[["gap13"]]
+```
+
+##### 訓練機会
+
+```{r echo=FALSE}
+predict_res[["gap14"]]
+```
+:::
+
+#### 5.2.2.派遣社員と正規雇用の格差
+
+::: panel-tabset
+##### 賃金
+
+```{r echo=FALSE}
+predict_res[["gap21"]]
+```
+
+##### 福利厚生
+
+```{r echo=FALSE}
+predict_res[["gap22"]]
+```
+
+##### 昇給
+
+```{r echo=FALSE}
+predict_res[["gap23"]]
+```
+
+##### 訓練機会
+
+```{r echo=FALSE}
+predict_res[["gap24"]]
+```
+:::
+
+#### 5.2.3.同一職場の業務内容の違い
+
+::: panel-tabset
+##### アルバイトと正規雇用
+
+```{r echo=FALSE}
+predict_res[["diff1"]]
+```
+
+##### 派遣社員と正規雇用
+
+```{r echo=FALSE}
+predict_res[["diff2"]]
+```
+:::
+
+## 6.議論
+
+### 6.1.知見の整理
+
+　本稿では，非正規雇用の地位に関する人々の評価について，特に職場内部で生じる相互作用の観点から検討した．特に，職場内部での正規・非正規雇用間の格差や区分が，非正規雇用に対する認識のマクロな体系をどのように形成するのかを明らかにした．職場内部での正規・非正規雇用の格差が大きいほど，正規・非正規雇用の地位の格差を大きく評価することを予測した仮説1は，いずれも支持された．賃金・福利厚生・昇給・訓練機会のいずれについても，職場内での正規・非正規雇用格差が大きい場合に，正規・非正規雇用間の地位の格差は大きく評価されていた．また，同一職場内の正規・非正規雇用間での業務内容の差が大きいほど，正規・非正規雇用間の地位の格差は大きく評価されることを予測した仮説2も，いずれも支持された．これらの分析結果は，職場というメゾレベルの組織内部で生じる，ミクロレベルの相互作用が，非正規雇用の地位に関する認識を形成することで，マクロレベルの非正規雇用の地位に関する社会的了解が形成されることを示唆する．
+
+### 6.2.既存研究への貢献
+
+　（これから書きます．ごめんなさい．）
+
+## 文献（未整理）
+
+-   有田伸，2016，『就業機会と報酬格差の社会学ーー非正規雇用・社会階層の日韓比較』東京大学出版会．
+-   Arita, Shin, Kikuko Nagayoshi, Hirofumi Taki, Hiroshi Kanbayashi, Hirohisa Takenoshita, and Takashi Yoshida, 2023, “Legitimation of Earnings Inequality between Regular and Non-Regular Workers: A Comparison of Japan, South Korea, and the United States,” *International Journal of Comparative Sociology*, 64(6): 658–80.
+-   Auspurg, Katrin, and Thomas Hinz, 2015, *Factorial Survey Experiments*, Los Angeles: Sage.
+-   Dobbin, Frank, 2009, *Inventing Equal Opportunity*, Princeton University Press.
+-   Dore, Ronald, 1973, *British Factory, Japanese Factory: The Origins of National Diversity in Industrial Relations*, Berkeley: University of California Press. （=山之内靖・永易浩一訳，1987，『イギリスの工場・日本の工場――労使関係の比較社会学』筑摩書房．）
+-   元治恵子，2018，「職業評定および多元的地位指標（職業威信スコア）の基本的特性」元治恵子編『雇用多様化社会における社会的地位の測定』明星大学，14-29．
+-   Gordon, Andrew, 2017, “New and Enduring Dual Structures of Employment in Japan: The Rise of Non-Regular Labor, 1980s–2010s,” *Social Science Japan Journal*, 20(1): 9–36.
+-   Imai, Jun, 2011, “The Limit of Equality by ‘Company Citizenship’: Politics of Labor Market Segmentation in the Case of Regular and Non-Regular Employment in Japan,” Yoshimichi Sato and Jun Imai eds, *Japan’s New Inequality: Intersection of Employment Reforms and Welfare Arrangements*, Trans Pacific Press, 32–53.
+-   Kalleberg, Arne L., 2018, *Precarious Lives: Job Insecurity and Well-Being in Rich Democracies*, Cambridge: Polity Press.
+-   神林龍，2017，『正規の世界・非正規の世界ーー現代日本労働経済学の基本問題』慶應義塾大学出版会．
+-   Nasu, Rantaro, 2025, “Occupational Prestige of Non-regular Employees and Its Evaluation Criteria in Japan: Evidence from Factorial Survey Experiments,” *Sociological Theory and Methods*.（もうすぐオープンになるはず）
+-   OECD, 2017, OECD Economic Surveys: Japan 2017.
+-   小熊英二，2019，『日本社会のしくみ』講談社現代新書．
+-   Ridgeway, Cecilia L., 2014, “Why Status Matters for Inequality,” *American Sociological Review*, 79(1): 1–16.
+-   Ridgeway, Cecilia L., and James W. Balkwell, 1997, “Group Processes and the Diffusion of Status Beliefs,” *Social Psychology Quarterly*, 60(1): 14–31.
+-   Ridgeway, Cecilia L., Elizabeth Heger Boyle, Kathy J. Kuipers, and Dawn T. Robinson, 1998, “How Do Status Beliefs Develop? The Role of Resources and Interactional Experience,” *American Sociological Review*, 63(3) :331–50.
+-   Ridgeway, Cecilia L., and Shelley J. Correll, 2006, “Consensus and the Creation of Status Beliefs,” *Social Forces*, 85(1) :431–53.
+-   Ridgeway, Cecilia L. and Hazel Rose Markus, 2022, "The Significance of Status: What It Is and How It Shapes Inequality," *Russell Sage Foundation Journal of the Social Sciences*, 8(7): 1-25.
+-   Robinson, Patricia, Catherine Sibala, Kiyohiko Ito, and Vicki L. Beyer, 2022, “The Deepening Divide In Japanese Employment: The Increasing Marginalization of Contract Workers as Explained by Path Dependence, Vested Interests, and Social Psychology,” *Contemporary Japan*, 34(1): 13–41.
+-   瀬戸健太郎・渡辺健太郎・池田岳大・那須蘭太郎，2026，「職業への地位評価から見た日本社会のあり方ーー実験的調査からのアプローチ」『よろん』137．
+-   Tomaskovic-Devey, Donald, and Dustin Avent-Holt, 2019, *Relational Inequalities: An Organizational Approach*, New York: Oxford University Press.
+-   Weber, Max, 1956, *Wirtschaft und Gesellschaft: Grundriss der Verstehenden Soziologie, Neu Herausgegebene Aufl., Besorgt von Johannes Winckelmann*, Tübingen: Mohr. （=世良晃志郎訳，1970，『支配の諸類型』創文社．）
+-   Yu, Wei-hsin. 2012. “Better Off Jobless? Scarring Effects of Contingent Employment in Japan.” *Social Forces*, 90(3): 735–68.
